@@ -85,5 +85,12 @@ class IdViewController: BaseViewController {
                 self?.navigationController?.popViewController(animated: true)
             })
             .disposed(by: disposeBag)
+
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let passwordViewController = PasswordViewController()
+                self?.navigationController?.pushViewController(passwordViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }

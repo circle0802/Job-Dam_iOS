@@ -151,6 +151,12 @@ class InfoViewController: BaseViewController {
         .distinctUntilChanged()
         .bind(to: singupButton.rx.isEnabled)
         .disposed(by: disposeBag)
+
+        singupButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 
     private func updateButtonStyles() {

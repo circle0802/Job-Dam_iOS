@@ -52,10 +52,21 @@ class PasswordViewController: BaseViewController {
     }
 
     override func bind() {
-        passwordTextField.textField.rx.text.orEmpty
-            .map { !$0.isEmpty }
+        Observable
+            .combineLatest(
+                passwordTextField.textField.rx.text.orEmpty,
+                passwordConfirmTextField.textField.rx.text.orEmpty
+            )
+            .map { !$0.isEmpty && !$1.isEmpty }
             .distinctUntilChanged()
             .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let infoViewController = InfoViewController()
+                self?.navigationController?.pushViewController(infoViewController, animated: true)
+            })
             .disposed(by: disposeBag)
     }
 }
