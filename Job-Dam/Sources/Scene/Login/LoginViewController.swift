@@ -89,5 +89,12 @@ class LoginViewController: BaseViewController {
             .distinctUntilChanged()
             .bind(to: loginButton.rx.isEnabled)
             .disposed(by: disposeBag)
+        
+        signupButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let idViewController = IdViewController()
+                self?.navigationController?.pushViewController(idViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }

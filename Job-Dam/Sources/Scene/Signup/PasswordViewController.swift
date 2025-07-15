@@ -15,24 +15,6 @@ class PasswordViewController: BaseViewController {
     }
     let passwordTextField = JobdamTextField("비밀번호", placeholder: "8~25자 내로 생성(대소문자, 숫자, 특수문자 포함)", isSecure: true)
     let passwordConfirmTextField = JobdamTextField("비밀번호 확인", placeholder: "비밀번호를 다시 입력해주세요", isSecure: true)
-    let loginLabel = UILabel().then {
-        $0.text = "계정이 이미 있으신가요?"
-        $0.font = .jobdamFont(.body2)
-        $0.textColor = JobDamAsset.gray800.color
-    }
-    let loginButton = UIButton().then {
-        let title = "로그인"
-        let attributedString = NSAttributedString(
-            string: title,
-            attributes: [
-                .font: UIFont.jobdamFont(.body2),
-                .foregroundColor: JobDamAsset.main600.color,
-                .underlineStyle: NSUnderlineStyle.single.rawValue
-            ]
-        )
-        $0.setAttributedTitle(attributedString, for: .normal)
-        $0.isUserInteractionEnabled = true
-    }
     let nextButton = JobdamButton(text: "다음")
 
     override func addView() {
@@ -41,8 +23,6 @@ class PasswordViewController: BaseViewController {
             signupTitleLabel,
             passwordTextField,
             passwordConfirmTextField,
-            loginLabel,
-            loginButton,
             nextButton
         ].forEach { view.addSubview($0) }
     }
@@ -63,14 +43,6 @@ class PasswordViewController: BaseViewController {
         passwordConfirmTextField.snp.makeConstraints {
             $0.top.equalTo(passwordTextField.snp.bottom).offset(36)
             $0.leading.trailing.equalToSuperview()
-        }
-        loginLabel.snp.makeConstraints {
-            $0.bottom.equalTo(nextButton.snp.top).offset(-12)
-            $0.leading.equalToSuperview().inset(24)
-        }
-        loginButton.snp.makeConstraints {
-            $0.bottom.equalTo(nextButton.snp.top).offset(-6)
-            $0.leading.equalTo(loginLabel.snp.trailing).offset(4)
         }
         nextButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
