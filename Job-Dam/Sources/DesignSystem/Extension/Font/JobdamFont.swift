@@ -11,12 +11,11 @@ extension JobdamFontStyle {
         let pretendard = JobDamFontFamily.Pretendard.self
 
         switch self {
-
         case .heading1, .heading2, .heading3, .heading4, .subTitle1, .subTitle2:
             return pretendard.semiBold.font(size: self.size())
 
-        case .body1, .body2, .body3:
-            return pretendard.medium.font(size: self.size())
+        case .body1, .body2, .body3, .caption:
+            return pretendard.regular.font(size: self.size())
         }
     }
 
@@ -46,6 +45,9 @@ extension JobdamFontStyle {
 
         case .body3:
             return 12
+
+        case .caption:
+            return 10
         }
     }
 }

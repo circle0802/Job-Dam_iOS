@@ -12,4 +12,6 @@ public enum JobdamFontStyle {
     case body1
     case body2
     case body3
+
+    case caption
 }
