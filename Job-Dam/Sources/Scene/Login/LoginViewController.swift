@@ -61,7 +61,7 @@ class LoginViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview()
         }
         passwordTextField.snp.makeConstraints {
-            $0.top.equalTo(idTextField.snp.bottom).offset(38)
+            $0.top.equalTo(idTextField.snp.bottom).offset(36)
             $0.leading.trailing.equalToSuperview()
         }
         signupLabel.snp.makeConstraints {

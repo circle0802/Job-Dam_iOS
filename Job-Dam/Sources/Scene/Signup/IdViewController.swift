@@ -4,7 +4,7 @@ import Then
 import RxSwift
 import RxCocoa
 
-class SignupViewController: BaseViewController {
+class IdViewController: BaseViewController {
     let logoImage = UIImageView().then {
         $0.image = UIImage(named: "smallLogo")
     }

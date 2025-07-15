@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
 
-        let mainViewController = SignupViewController()
+        let mainViewController = PasswordViewController()
         window?.rootViewController = mainViewController
         window?.makeKeyAndVisible()
 
