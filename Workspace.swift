@@ -1,9 +1,9 @@
 import ProjectDescription
 
 let workspace = Workspace(
-    name: "Hackathon-Template",
+    name: "Job-Dam",
     projects: [
-        "Hackathon-Template"
+        "Job-Dam"
     ],
     fileHeaderTemplate: nil,
     additionalFiles: []
