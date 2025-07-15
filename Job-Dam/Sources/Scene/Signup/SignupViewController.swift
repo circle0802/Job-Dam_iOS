@@ -14,6 +14,24 @@ class SignupViewController: BaseViewController {
         $0.textColor = JobDamAsset.black.color
     }
     let idTextField = JobdamTextField("아이디", placeholder: "아이디를 입력해주세요")
+    let loginLabel = UILabel().then {
+        $0.text = "계정이 이미 있으신가요?"
+        $0.font = .jobdamFont(.body2)
+        $0.textColor = JobDamAsset.gray800.color
+    }
+    let loginButton = UIButton().then {
+        let title = "로그인"
+        let attributedString = NSAttributedString(
+            string: title,
+            attributes: [
+                .font: UIFont.jobdamFont(.body2),
+                .foregroundColor: JobDamAsset.main600.color,
+                .underlineStyle: NSUnderlineStyle.single.rawValue
+            ]
+        )
+        $0.setAttributedTitle(attributedString, for: .normal)
+        $0.isUserInteractionEnabled = true
+    }
     let nextButton = JobdamButton(text: "다음")
 
     override func addView() {
@@ -21,6 +39,8 @@ class SignupViewController: BaseViewController {
             logoImage,
             loginTitleLabel,
             idTextField,
+            loginLabel,
+            loginButton,
             nextButton
         ].forEach { view.addSubview($0) }
     }
@@ -37,6 +57,14 @@ class SignupViewController: BaseViewController {
         idTextField.snp.makeConstraints {
             $0.top.equalTo(loginTitleLabel.snp.bottom).offset(54)
             $0.leading.trailing.equalToSuperview()
+        }
+        loginLabel.snp.makeConstraints {
+            $0.bottom.equalTo(nextButton.snp.top).offset(-12)
+            $0.leading.equalToSuperview().inset(24)
+        }
+        loginButton.snp.makeConstraints {
+            $0.bottom.equalTo(nextButton.snp.top).offset(-6)
+            $0.leading.equalTo(loginLabel.snp.trailing).offset(4)
         }
         nextButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
