@@ -6,6 +6,20 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
     
     var homeCollectionV: UICollectionView!
     private let summationView = SummationView(job: "선생님", content: "피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백")
+    private let newLabel = UILabel().then {
+        $0.text = "새로 올라온 글"
+        $0.font = .jobdamFont(.body3)
+    }
+    private let backgroundView = UIView().then {
+        $0.backgroundColor = JobDamAsset.main50.color
+        $0.layer.cornerRadius = 10
+    }
+    private let postTableView = SimpleTableView()
+    private let moreButton = UIButton().then {
+        $0.setTitle("다른 글도 보러가기", for: .normal)
+        $0.setTitleColor(JobDamAsset.black.color, for: .normal)
+        $0.titleLabel?.font = .jobdamFont(.body3)
+    }
     
     override func configureViewController() {
         self.title = "메인페이지"
@@ -15,18 +29,38 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
     override func addView() {
         [
             homeCollectionV!,
-            summationView
+            summationView,
+            newLabel,
+            backgroundView,
+            moreButton
         ].forEach { view.addSubview($0) }
+        backgroundView.addSubview(postTableView)
     }
     
     override func setLayout() {
         homeCollectionV.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
         summationView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(200)
             $0.leading.trailing.equalToSuperview().inset(24)
+        }
+        newLabel.snp.makeConstraints {
+            $0.top.equalTo(summationView.snp.bottom).offset(24)
+            $0.leading.equalToSuperview().inset(32)
+        }
+        backgroundView.snp.makeConstraints {
+            $0.top.equalTo(newLabel.snp.bottom).offset(8)
+            $0.leading.trailing.equalToSuperview().inset(32)
+        }
+        postTableView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(16)
+            $0.leading.trailing.equalToSuperview().inset(12)
+            $0.height.equalTo(190)
+        }
+        moreButton.snp.makeConstraints {
+            $0.top.equalTo(backgroundView.snp.bottom).offset(4)
+            $0.trailing.equalToSuperview().inset(32)
         }
     }
 }
