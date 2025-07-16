@@ -5,10 +5,29 @@ import Then
 class MainViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, HomeVCDelegate {
     
     var homeCollectionV: UICollectionView!
+    private let summationView = SummationView(job: "선생님", content: "피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백")
     
     override func configureViewController() {
         self.title = "메인페이지"
         setupCollectionView()
+    }
+    
+    override func addView() {
+        [
+            homeCollectionV!,
+            summationView
+        ].forEach { view.addSubview($0) }
+    }
+    
+    override func setLayout() {
+        homeCollectionV.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        summationView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(200)
+            $0.leading.trailing.equalToSuperview().inset(24)
+        }
     }
 }
 
@@ -18,16 +37,13 @@ extension MainViewController {
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 200)
         
-        homeCollectionV = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        homeCollectionV = UICollectionView(frame: .zero, collectionViewLayout: layout)
         homeCollectionV.delegate = self
         homeCollectionV.dataSource = self
-        homeCollectionV.backgroundColor = .white
-        homeCollectionV.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        homeCollectionV.backgroundColor = .clear
         homeCollectionV.register(ScrollBannerView.self,
                                  forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                  withReuseIdentifier: "ScrollBannerView")
-        
-        view.addSubview(homeCollectionV)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
