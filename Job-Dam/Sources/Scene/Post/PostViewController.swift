@@ -3,8 +3,21 @@ import SnapKit
 import Then
 
 class PostViewController: BaseViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    let postTableView = PostTableView()
+
+    override func addView() {
+        [
+            postTableView
+        ].forEach { view.addSubview($0) }
+    }
+    override func setLayout() {
+        postTableView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(32)
+            $0.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(24)
+        }
+    }
+    override func configureViewController() {
         self.title = "질의응답"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "plus"),

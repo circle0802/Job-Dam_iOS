@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import Then
 
-final class SimpleTableView: UIView {
+final class PostTableView: UIView {
 
     private let posts: [SimplePost] = [
         SimplePost(title: "첫 번째 글", id: "1", username: "홍길동", commentCount: 3),
@@ -18,7 +18,7 @@ final class SimpleTableView: UIView {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
-        $0.register(CustomSimpleCell.self, forCellReuseIdentifier: CustomSimpleCell.identifier)
+        $0.register(PostCell.self, forCellReuseIdentifier: PostCell.identifier)
     }
 
     override init(frame: CGRect) {
@@ -44,7 +44,7 @@ final class SimpleTableView: UIView {
     }
 }
 
-extension SimpleTableView: UITableViewDataSource {
+extension PostTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return posts.count
@@ -56,7 +56,7 @@ extension SimpleTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomSimpleCell.identifier, for: indexPath) as? CustomSimpleCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCell.identifier, for: indexPath) as? PostCell else {
             return UITableViewCell()
         }
         
@@ -67,10 +67,10 @@ extension SimpleTableView: UITableViewDataSource {
     }
 }
 
-extension SimpleTableView: UITableViewDelegate {
+extension PostTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 52
+        return 60
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

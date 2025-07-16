@@ -63,7 +63,12 @@ class PopupView: UIView {
         backgroundColor = .clear
         addSubview(backgroundView)
         addSubview(containerView)
-        [titleLabel, contentLabel, cancelButton, logoutButton].forEach { containerView.addSubview($0) }
+        [
+            titleLabel,
+            contentLabel,
+            cancelButton,
+            logoutButton
+        ].forEach { containerView.addSubview($0) }
     }
 
     private func setupConstraints() {

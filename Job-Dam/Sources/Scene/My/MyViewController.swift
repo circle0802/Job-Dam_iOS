@@ -36,7 +36,7 @@ class MyViewController: BaseViewController {
         $0.layer.cornerRadius = 10
     }
 
-    let questionButton = MyButton(text: "내가 한 질문 보기", color: JobDamAsset.black.color)
+    let questionButton = MyButton(text: "내가 작성한 질문", color: JobDamAsset.black.color)
     let logoutButton = MyButton(text: "로그아웃", color: JobDamAsset.error.color)
     let secessionButton = MyButton(text: "회원탈퇴", color: JobDamAsset.error.color)
 
@@ -109,6 +109,13 @@ class MyViewController: BaseViewController {
         secessionButton.rx.tap
             .bind { [weak self] in
                 self?.secessionPopupView.show()
+            }
+            .disposed(by: disposeBag)
+
+        questionButton.rx.tap
+            .bind { [weak self] in
+                let mypostVC = MyPostViewController()
+                self?.navigationController?.pushViewController(mypostVC, animated: true)
             }
             .disposed(by: disposeBag)
     }

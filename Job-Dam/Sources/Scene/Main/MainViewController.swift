@@ -63,6 +63,14 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
             $0.trailing.equalToSuperview().inset(32)
         }
     }
+
+    override func bind() {
+        moreButton.rx.tap
+            .bind { [weak self] in
+                self?.tabBarController?.selectedIndex = 0
+            }
+            .disposed(by: disposeBag)
+    }
 }
 
 extension MainViewController {

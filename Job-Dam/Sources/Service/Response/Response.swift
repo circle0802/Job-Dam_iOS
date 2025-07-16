@@ -1,7 +1,8 @@
-//
-//  Void.swift
-//  Hackathon-Template
-//
-//  Created by 원이 on 7/14/25.
-//
+import Foundation
 
+struct SimplePost {
+    let title: String
+    let id: String
+    let username: String
+    let commentCount: Int
+}

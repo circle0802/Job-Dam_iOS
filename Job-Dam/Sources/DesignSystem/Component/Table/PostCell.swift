@@ -2,14 +2,16 @@ import UIKit
 import SnapKit
 import Then
 
-final class CustomSimpleCell: UITableViewCell {
+final class PostCell: UITableViewCell {
     
-    static let identifier = "CustomSimpleCell"
+    static let identifier = "PostCell"
     
     private let cardView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
+        $0.layer.borderWidth = 0.5
+        $0.layer.borderColor = JobDamAsset.black.color.cgColor
+        $0.layer.cornerRadius = 10
     }
     private let title = UILabel().then {
         $0.font = .jobdamFont(.body2)
@@ -75,3 +77,5 @@ final class CustomSimpleCell: UITableViewCell {
         self.numberLabel.text = "\(count)"
     }
 }
+
+
