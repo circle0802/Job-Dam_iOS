@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import Then
 
-final class CustomSimpleCell: UITableViewCell {
+final class MainPostCell: UITableViewCell {
     
     static let identifier = "CustomSimpleCell"
     

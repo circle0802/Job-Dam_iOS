@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import Then
 
-final class SimpleTableView: UIView {
+final class MainPostTableView: UIView {
 
     private let posts: [SimplePost] = [
         SimplePost(title: "첫 번째 글", id: "1", username: "홍길동", commentCount: 3),
@@ -18,7 +18,7 @@ final class SimpleTableView: UIView {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
-        $0.register(CustomSimpleCell.self, forCellReuseIdentifier: CustomSimpleCell.identifier)
+        $0.register(MainPostCell.self, forCellReuseIdentifier: MainPostCell.identifier)
     }
 
     override init(frame: CGRect) {
@@ -44,7 +44,7 @@ final class SimpleTableView: UIView {
     }
 }
 
-extension SimpleTableView: UITableViewDataSource {
+extension MainPostTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return posts.count
@@ -56,7 +56,7 @@ extension SimpleTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomSimpleCell.identifier, for: indexPath) as? CustomSimpleCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MainPostCell.identifier, for: indexPath) as? MainPostCell else {
             return UITableViewCell()
         }
         
@@ -67,7 +67,7 @@ extension SimpleTableView: UITableViewDataSource {
     }
 }
 
-extension SimpleTableView: UITableViewDelegate {
+extension MainPostTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 52
@@ -75,7 +75,7 @@ extension SimpleTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = posts[indexPath.section]
-        didSelectName?(selectedPost.title)
+        didSelectName?(selectedPost.id)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

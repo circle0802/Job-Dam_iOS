@@ -5,20 +5,20 @@ import RxSwift
 
 class CreateViewController: BaseViewController {
 
-    let titleTextField = JobdamTextField("제목", placeholder: "제목을 입력해주세요")
+    private let titleTextField = JobdamTextField("제목", placeholder: "제목을 입력해주세요")
 
-    let infoLabel = UILabel().then {
+    private let infoLabel = UILabel().then {
         $0.text = "100자 이내"
         $0.font = .jobdamFont(.caption)
         $0.textColor = JobDamAsset.gray700.color
     }
 
-    let contentLabel = UILabel().then {
+    private let contentLabel = UILabel().then {
         $0.text = "질문 내용"
         $0.font = .jobdamFont(.body3)
     }
 
-    let contentTextView = UITextView().then {
+    private let contentTextView = UITextView().then {
         $0.font = .jobdamFont(.body2)
         $0.backgroundColor = JobDamAsset.gray50.color
         $0.layer.cornerRadius = 5

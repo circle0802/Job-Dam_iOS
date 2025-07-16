@@ -27,6 +27,12 @@ class PostViewController: BaseViewController {
         )
         self.navigationController?.navigationBar.tintColor = JobDamAsset.main400.color
     }
+    override func bind() {
+        postTableView.didSelectName = { [weak self] name in
+            let postDetailVC = PostDetailViewController()
+            self?.navigationController?.pushViewController(postDetailVC, animated: true)
+        }
+    }
     
     @objc private func rightButtonTapped() {
         let createVC = CreateViewController()

@@ -26,6 +26,12 @@ class MyPostViewController: BaseViewController {
         navigationItem.leftBarButtonItem = backButton
         navigationItem.leftBarButtonItem?.tintColor = JobDamAsset.black.color
     }
+    override func bind() {
+        postTableView.didSelectName = { [weak self] name in
+            let postDetailVC = PostDetailViewController()
+            self?.navigationController?.pushViewController(postDetailVC, animated: true)
+        }
+    }
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }

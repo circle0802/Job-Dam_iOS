@@ -14,7 +14,7 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
         $0.backgroundColor = JobDamAsset.main50.color
         $0.layer.cornerRadius = 10
     }
-    private let postTableView = SimpleTableView()
+    private let postTableView = MainPostTableView()
     private let moreButton = UIButton().then {
         $0.setTitle("다른 글도 보러가기", for: .normal)
         $0.setTitleColor(JobDamAsset.black.color, for: .normal)
@@ -70,6 +70,11 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
                 self?.tabBarController?.selectedIndex = 0
             }
             .disposed(by: disposeBag)
+
+        postTableView.didSelectName = { [weak self] name in
+            let postDetailVC = PostDetailViewController()
+            self?.navigationController?.pushViewController(postDetailVC, animated: true)
+        }
     }
 }
 
