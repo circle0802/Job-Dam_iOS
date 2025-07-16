@@ -73,6 +73,7 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
 
         postTableView.didSelectName = { [weak self] name in
             let postDetailVC = PostDetailViewController()
+            postDetailVC.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(postDetailVC, animated: true)
         }
     }

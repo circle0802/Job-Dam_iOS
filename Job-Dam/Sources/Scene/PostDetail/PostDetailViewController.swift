@@ -27,6 +27,28 @@ class PostDetailViewController: BaseViewController {
     private let line = UIView().then {
         $0.backgroundColor = JobDamAsset.gray200.color
     }
+    private let commemtTableView = CommentTableView()
+    private let inputContainerView = UIView().then {
+        $0.backgroundColor = JobDamAsset.white.color
+    }
+
+    private let inputTextView = UITextView().then {
+        $0.font = .jobdamFont(.body2)
+        $0.textColor = JobDamAsset.black.color
+        $0.backgroundColor = JobDamAsset.gray50.color
+        $0.isScrollEnabled = false
+        $0.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        $0.layer.cornerRadius = 10
+    }
+
+    private let sendButton = UIButton().then {
+        $0.setTitle("완료", for: .normal)
+        $0.setTitleColor(JobDamAsset.white.color, for: .normal)
+        $0.titleLabel?.font = .jobdamFont(.body2)
+        $0.backgroundColor = JobDamAsset.main400.color
+        $0.layer.cornerRadius = 5
+    }
+
 
     override func addView() {
         [
@@ -34,8 +56,15 @@ class PostDetailViewController: BaseViewController {
             idLabel,
             contentLabel,
             dayLabel,
-            line
+            line,
+            commemtTableView,
+            inputContainerView
         ].forEach { view.addSubview($0) }
+
+        [
+            inputTextView,
+            sendButton
+        ].forEach { inputContainerView.addSubview($0) }
     }
     override func setLayout() {
         titleLabel.snp.makeConstraints {
@@ -59,6 +88,30 @@ class PostDetailViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(1)
         }
+        commemtTableView.snp.makeConstraints {
+            $0.top.equalTo(line.snp.bottom).offset(20)
+            $0.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(24)
+        }
+        inputContainerView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
+            $0.height.greaterThanOrEqualTo(60)
+        }
+
+        inputTextView.snp.makeConstraints {
+            $0.top.leading.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(16)
+            $0.trailing.equalTo(sendButton.snp.leading).offset(-8)
+        }
+
+        sendButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(12)
+            $0.centerY.equalTo(inputTextView)
+            $0.width.equalTo(59)
+            $0.height.equalTo(33)
+        }
+
     }
     override func configureViewController() {
         self.title = "질문"
@@ -67,8 +120,16 @@ class PostDetailViewController: BaseViewController {
         let backButton = UIBarButtonItem(image: backImage, style: .plain, target: self, action: #selector(backButtonTapped))
         navigationItem.leftBarButtonItem = backButton
         navigationItem.leftBarButtonItem?.tintColor = JobDamAsset.black.color
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+
     }
 
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }

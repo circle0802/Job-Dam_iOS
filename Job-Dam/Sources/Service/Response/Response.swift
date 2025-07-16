@@ -6,3 +6,9 @@ struct SimplePost {
     let username: String
     let commentCount: Int
 }
+
+struct Comment {
+    let count: Int
+    let id: String
+    let content: String
+}

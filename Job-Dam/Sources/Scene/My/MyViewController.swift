@@ -115,6 +115,7 @@ class MyViewController: BaseViewController {
         questionButton.rx.tap
             .bind { [weak self] in
                 let mypostVC = MyPostViewController()
+                mypostVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(mypostVC, animated: true)
             }
             .disposed(by: disposeBag)

@@ -29,6 +29,7 @@ class MyPostViewController: BaseViewController {
     override func bind() {
         postTableView.didSelectName = { [weak self] name in
             let postDetailVC = PostDetailViewController()
+            postDetailVC.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(postDetailVC, animated: true)
         }
     }
