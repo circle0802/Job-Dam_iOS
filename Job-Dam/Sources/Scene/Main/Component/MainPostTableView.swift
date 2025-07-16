@@ -5,14 +5,14 @@ import Then
 final class MainPostTableView: UIView {
 
     private let posts: [SimplePost] = [
-        SimplePost(title: "첫 번째 글", id: "1", username: "홍길동", commentCount: 3),
-        SimplePost(title: "두 번째 글", id: "2", username: "김철수", commentCount: 5),
-        SimplePost(title: "세 번째 글", id: "3", username: "이영희", commentCount: 2),
-        SimplePost(title: "네 번째 글", id: "4", username: "박지민", commentCount: 0),
-        SimplePost(title: "다섯 번째 글", id: "5", username: "최수연", commentCount: 1)
+        SimplePost(id: 1, title: "첫 번째 글", username: "홍길동", commentCount: 3),
+        SimplePost(id: 2, title: "두 번째 글", username: "김철수", commentCount: 5),
+        SimplePost(id: 3, title: "세 번째 글", username: "이영희", commentCount: 2),
+        SimplePost(id: 4, title: "네 번째 글", username: "박지민", commentCount: 0),
+        SimplePost(id: 5, title: "다섯 번째 글", username: "최수연", commentCount: 1)
     ]
     
-    var didSelectName: ((String) -> Void)?
+    var didSelectName: ((Int) -> Void)?
     
     private let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.separatorStyle = .none

@@ -4,15 +4,9 @@ import Then
 
 final class PostTableView: UIView {
 
-    private let posts: [SimplePost] = [
-        SimplePost(title: "첫 번째 글", id: "1", username: "홍길동", commentCount: 3),
-        SimplePost(title: "두 번째 글", id: "2", username: "김철수", commentCount: 5),
-        SimplePost(title: "세 번째 글", id: "3", username: "이영희", commentCount: 2),
-        SimplePost(title: "네 번째 글", id: "4", username: "박지민", commentCount: 0),
-        SimplePost(title: "다섯 번째 글", id: "5", username: "최수연", commentCount: 1)
-    ]
+    private var posts: [SimplePost] = []  // var로 변경
     
-    var didSelectName: ((String) -> Void)?
+    var didSelectName: ((Int) -> Void)?
     
     private let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.separatorStyle = .none
@@ -41,6 +35,12 @@ final class PostTableView: UIView {
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
+    }
+    
+    // 데이터 갱신 함수 추가
+    func updateData(_ posts: [SimplePost]) {
+        self.posts = posts
+        tableView.reloadData()
     }
 }
 
@@ -75,7 +75,7 @@ extension PostTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = posts[indexPath.section]
-        didSelectName?(selectedPost.title)
+        didSelectName?(selectedPost.id)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

@@ -8,7 +8,8 @@ let project = Project.dynamicFramework(
         .Moya,
         .Then,
         .SnapKit,
-        .Kingfisher
+        .Kingfisher,
+        .Cosmos
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -16,6 +17,7 @@ let project = Project.dynamicFramework(
         .SPM.RxMoya,
         .SPM.Then,
         .SPM.SnapKit,
-        .SPM.Kingfisher
+        .SPM.Kingfisher,
+        .SPM.Cosmos
     ]
 )

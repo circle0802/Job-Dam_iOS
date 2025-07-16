@@ -4,10 +4,7 @@ import Then
 
 final class CommentTableView: UIView {
 
-    private let posts: [Comment] = [
-        Comment(count: 1, id: "circle08", content: "이렇게 해보세요이렇게 해보세요이렇게 해보세요이렇게 해보세요이렇게 해보세요이렇게 해보세요이렇게 해보세요이렇게 해보세요"),
-        Comment(count: 2, id: "circle08", content: "저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요저렇게 해보세요")
-    ]
+    private var posts: [Comment] = []
     
     var didSelectName: ((Int) -> Void)?
     
@@ -39,6 +36,10 @@ final class CommentTableView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
     }
+    func updateData(_ newComments: [Comment]) {
+        self.posts = newComments
+        self.tableView.reloadData()
+    }
 }
 
 extension CommentTableView: UITableViewDataSource {
@@ -58,8 +59,7 @@ extension CommentTableView: UITableViewDataSource {
         }
         
         let post = posts[indexPath.section]
-        cell.configure(id: post.id, content: post.content)
-
+        cell.configure(id: post.author, content: post.content)
 
         return cell
     }
@@ -73,7 +73,7 @@ extension CommentTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedPost = posts[indexPath.section]
-        didSelectName?(selectedPost.count)
+        didSelectName?(selectedPost.id)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

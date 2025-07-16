@@ -27,8 +27,8 @@ class MyPostViewController: BaseViewController {
         navigationItem.leftBarButtonItem?.tintColor = JobDamAsset.black.color
     }
     override func bind() {
-        postTableView.didSelectName = { [weak self] name in
-            let postDetailVC = PostDetailViewController()
+        postTableView.didSelectName = { [weak self] id in
+            let postDetailVC = PostDetailViewController(id: id)
             postDetailVC.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(postDetailVC, animated: true)
         }

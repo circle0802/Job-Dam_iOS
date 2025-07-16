@@ -5,7 +5,7 @@ import Then
 class MainViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, HomeVCDelegate {
     
     var homeCollectionV: UICollectionView!
-    private let summationView = SummationView(job: "선생님", content: "피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백 요약 피드백")
+    private let summationView = SummationView(job: "선생님", content: "차분하게 상황을 해결하려는 태도가 좋습니다. 다만 수업 흐름을 방해하지 않도록 개별적으로 나중에 이야기하는 방법도 고려하면 더 좋습니다.학생의 행동 뒤에 있는 이유(지루함, 관심 끌기 등)를 파악하는 것도 중요한 교사의 역할이에요.")
     private let newLabel = UILabel().then {
         $0.text = "새로 올라온 글"
         $0.font = .jobdamFont(.body3)
@@ -71,8 +71,8 @@ class MainViewController: BaseViewController, UICollectionViewDelegate, UICollec
             }
             .disposed(by: disposeBag)
 
-        postTableView.didSelectName = { [weak self] name in
-            let postDetailVC = PostDetailViewController()
+        postTableView.didSelectName = { [weak self] id in
+            let postDetailVC = PostDetailViewController(id: id)
             postDetailVC.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(postDetailVC, animated: true)
         }
