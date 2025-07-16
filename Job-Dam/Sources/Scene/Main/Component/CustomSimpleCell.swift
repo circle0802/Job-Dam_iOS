@@ -12,9 +12,14 @@ final class CustomSimpleCell: UITableViewCell {
         $0.layer.masksToBounds = true
     }
     
-    private let nameLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 16)
+    private let title = UILabel().then {
+        $0.font = .jobdamFont(.body2)
         $0.textColor = .black
+    }
+    
+    private let id = UILabel().then {
+        $0.font = .jobdamFont(.caption)
+        $0.textColor = JobDamAsset.gray700.color
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -35,14 +40,22 @@ final class CustomSimpleCell: UITableViewCell {
             $0.edges.equalToSuperview()
         }
         
-        cardView.addSubview(nameLabel)
-        nameLabel.snp.makeConstraints {
+        [
+            title,
+            id
+        ].forEach { cardView.addSubview($0) }
+        title.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(12)
             $0.leading.equalToSuperview().inset(16)
-            $0.centerY.equalToSuperview()
+        }
+        id.snp.makeConstraints {
+            $0.top.equalTo(title.snp.bottom).offset(2)
+            $0.leading.equalToSuperview().inset(16)
         }
     }
     
-    func configure(name: String) {
-        nameLabel.text = name
+    func configure(title: String, id: String) {
+        self.title.text = title
+        self.id.text = id
     }
 }

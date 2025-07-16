@@ -3,8 +3,7 @@ import SnapKit
 import Then
 
 final class SimpleTableView: UIView {
-    
-    // MARK: - Properties
+
     private let names = ["홍길동", "김철수", "이영희", "박지민", "최수연"]
     
     var didSelectName: ((String) -> Void)?
@@ -15,8 +14,7 @@ final class SimpleTableView: UIView {
         $0.backgroundColor = .clear
         $0.register(CustomSimpleCell.self, forCellReuseIdentifier: CustomSimpleCell.identifier)
     }
-    
-    // MARK: - Init
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -40,7 +38,6 @@ final class SimpleTableView: UIView {
     }
 }
 
-// MARK: - UITableViewDataSource
 extension SimpleTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -57,12 +54,11 @@ extension SimpleTableView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(name: names[indexPath.section])
+        cell.configure(title: names[indexPath.section], id: names[indexPath.section])
         return cell
     }
 }
 
-// MARK: - UITableViewDelegate
 extension SimpleTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
