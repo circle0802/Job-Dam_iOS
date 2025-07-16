@@ -1,15 +1,18 @@
 import UIKit
+import SnapKit
+import Then
 
 class MainViewController: BaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, HomeVCDelegate {
-    
     var homeCollectionV: UICollectionView!
-    
+
     override func configureViewController() {
         self.title = "메인페이지"
-        
         setupCollectionView()
     }
-    
+}
+
+extension MainViewController {
+
     func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 200) // 헤더 높이 지정
