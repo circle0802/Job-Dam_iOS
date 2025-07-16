@@ -12,6 +12,9 @@ class LoopScrollView: UIScrollView, UIScrollViewDelegate {
     var numPages: Int = 0
     var pageControl: UIPageControl?
 
+    private let bannerWidth: CGFloat = 329
+    private let bannerHeight: CGFloat = 128
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupScroll()
@@ -30,17 +33,21 @@ class LoopScrollView: UIScrollView, UIScrollViewDelegate {
     }
 
     func setup() {
-        contentSize = CGSize(width: CGFloat(numPages + 2) * 329, height: 128)
+        guard numPages > 0 else { return }
 
-        loadScrollViewWithPage(0)
-        loadScrollViewWithPage(1)
-        loadScrollViewWithPage(2)
+        contentSize = CGSize(width: bannerWidth * CGFloat(numPages + 2), height: bannerHeight)
 
-        scrollRectToVisible(CGRect(x: 329, y: 0, width: 329, height: 128), animated: false)
+        // 로드 페이지: 0 ~ numPages+1 (맨 앞과 맨 뒤 복제)
+        for page in 0...(numPages + 1) {
+            loadScrollViewWithPage(page)
+        }
+
+        // 첫 페이지 위치로 셋팅 (page 1)
+        contentOffset = CGPoint(x: bannerWidth, y: 0)
     }
 
     private func loadScrollViewWithPage(_ page: Int) {
-        if page < 0 || page >= numPages + 2 { return }
+        guard page >= 0 && page <= numPages + 1 else { return }
 
         let index: Int
         if page == 0 {
@@ -53,7 +60,7 @@ class LoopScrollView: UIScrollView, UIScrollViewDelegate {
 
         guard let view = viewObjects?[index] else { return }
 
-        view.frame = CGRect(x: CGFloat(page) * 329, y: 0, width: 329, height: 128)
+        view.frame = CGRect(x: CGFloat(page) * bannerWidth, y: 0, width: bannerWidth, height: bannerHeight)
 
         if view.superview == nil {
             addSubview(view)
@@ -61,15 +68,21 @@ class LoopScrollView: UIScrollView, UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let pageWidth: CGFloat = 329
+        let pageWidth = bannerWidth
         let page = Int((contentOffset.x + (0.5 * pageWidth)) / pageWidth)
 
-        pageControl?.currentPage = {
-            if page == 0 { return numPages - 1 }
-            else if page == numPages + 1 { return 0 }
-            else { return page - 1 }
-        }()
+        // 페이지 컨트롤 인덱스 보정
+        let currentPage: Int
+        if page == 0 {
+            currentPage = numPages - 1
+        } else if page == numPages + 1 {
+            currentPage = 0
+        } else {
+            currentPage = page - 1
+        }
+        pageControl?.currentPage = currentPage
 
+        // 주변 페이지 뷰도 미리 로드 (최적화)
         loadScrollViewWithPage(page - 1)
         loadScrollViewWithPage(page)
         loadScrollViewWithPage(page + 1)
@@ -84,12 +97,14 @@ class LoopScrollView: UIScrollView, UIScrollViewDelegate {
     }
 
     private func fixScrollPosition() {
-        let pageWidth: CGFloat = 329
+        let pageWidth = bannerWidth
         let page = Int((contentOffset.x + (0.5 * pageWidth)) / pageWidth)
 
         if page == 0 {
-            contentOffset = CGPoint(x: CGFloat(numPages) * pageWidth, y: 0)
+            // 맨 앞 페이지에서 마지막 실제 페이지로 점프
+            contentOffset = CGPoint(x: pageWidth * CGFloat(numPages), y: 0)
         } else if page == numPages + 1 {
+            // 맨 뒤 페이지에서 첫 실제 페이지로 점프
             contentOffset = CGPoint(x: pageWidth, y: 0)
         }
     }
