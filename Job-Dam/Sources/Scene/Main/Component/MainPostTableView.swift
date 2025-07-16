@@ -4,13 +4,7 @@ import Then
 
 final class MainPostTableView: UIView {
 
-    private let posts: [SimplePost] = [
-        SimplePost(id: 1, title: "첫 번째 글", username: "홍길동", commentCount: 3),
-        SimplePost(id: 2, title: "두 번째 글", username: "김철수", commentCount: 5),
-        SimplePost(id: 3, title: "세 번째 글", username: "이영희", commentCount: 2),
-        SimplePost(id: 4, title: "네 번째 글", username: "박지민", commentCount: 0),
-        SimplePost(id: 5, title: "다섯 번째 글", username: "최수연", commentCount: 1)
-    ]
+    private var posts: [SimplePost] = []
     
     var didSelectName: ((Int) -> Void)?
     
@@ -42,12 +36,17 @@ final class MainPostTableView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
     }
+
+    func updateData(_ posts: [SimplePost]) {
+        self.posts = posts
+        tableView.reloadData()
+    }
 }
 
 extension MainPostTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return posts.count
+        return min(posts.count, 5)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

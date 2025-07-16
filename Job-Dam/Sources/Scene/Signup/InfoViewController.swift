@@ -3,8 +3,12 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Moya
 
 class InfoViewController: BaseViewController {
+    private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
+    private lazy var provider = MoyaProvider<AuthAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+
     private let genderSelected = BehaviorRelay<Bool>(value: false)
 
     var isAllRequiredAgreed: Bool {
@@ -154,9 +158,29 @@ class InfoViewController: BaseViewController {
 
         singupButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
+                guard let self = self else { return }
+
+                SignupInfo.shared.gender = self.maleButton.isSelected ? "남성" : "여성"
+
+                self.sendSignupRequest()
             })
             .disposed(by: disposeBag)
+
+    }
+
+    private func sendSignupRequest() {
+        let parameters = SignupInfo.shared.toRequestDTO()
+
+        provider.request(.signup(parameters: parameters)) { result in
+            switch result {
+            case .success(let response):
+                // 성공 처리
+                print("가입 성공:", response.statusCode)
+                self.navigationController?.pushViewController(LoginViewController(), animated: true)
+            case .failure(let error):
+                print("가입 실패:", error)
+            }
+        }
     }
 
     private func updateButtonStyles() {

@@ -2,8 +2,11 @@ import UIKit
 import SnapKit
 import Then
 import RxSwift
+import Moya
 
 class CreateViewController: BaseViewController {
+    private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
+    private lazy var provider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
 
     private let titleTextField = JobdamTextField("제목", placeholder: "제목을 입력해주세요")
 
@@ -110,8 +113,24 @@ class CreateViewController: BaseViewController {
             .distinctUntilChanged()
             .bind(to: createButton.rx.isEnabled)
             .disposed(by: disposeBag)
+        createButton.rx.tap
+            .bind { [weak self] in
+                self?.createPost()
+            }
+            .disposed(by: disposeBag)
     }
 
+    private func createPost() {
+        provider.request(.createPost(title: titleTextField.textField.text ?? "", content: contentTextView.text ?? "")) { result in
+            switch result {
+            case .success(let response):
+                print("성공!! \(response)")
+                self.navigationController?.popViewController(animated: true)
+            case .failure(let error):
+                print("error: \(error)")
+            }
+        }
+    }
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }

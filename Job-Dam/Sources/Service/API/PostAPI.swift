@@ -4,6 +4,7 @@ import Moya
 enum PostAPI {
     case viewAllPosts
     case viewDetailPost(id: Int)
+    case createPost(title: String, content: String)
 }
 
 extension PostAPI: TargetType {
@@ -17,20 +18,28 @@ extension PostAPI: TargetType {
             return "/posts"
         case .viewDetailPost(let id):
             return "/post/\(id)"
+        case .createPost:
+            return "/post"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .viewAllPosts:
+        case .viewAllPosts, .viewDetailPost:
             return .get
-        case .viewDetailPost:
-            return .get
+        case .createPost:
+            return .post
         }
     }
     
     var task: Moya.Task {
         switch self {
+        case .createPost(let title, let content):
+            return .requestParameters(
+                parameters: [
+                    "title": title,
+                    "content": content
+                ], encoding: JSONEncoding.default)
         default:
             return .requestPlain
         }

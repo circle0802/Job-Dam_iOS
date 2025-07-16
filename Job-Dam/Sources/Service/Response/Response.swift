@@ -44,3 +44,7 @@ struct Comment: Codable {
     let content: String
     let createdAt: String
 }
+
+struct AccessToken: Codable {
+    let accessToken: String
+}

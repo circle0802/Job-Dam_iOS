@@ -64,9 +64,11 @@ class PasswordViewController: BaseViewController {
 
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                let infoViewController = InfoViewController()
-                self?.navigationController?.pushViewController(infoViewController, animated: true)
+                SignupInfo.shared.password = self?.passwordTextField.textField.text
+                let infoVC = InfoViewController()
+                self?.navigationController?.pushViewController(infoVC, animated: true)
             })
             .disposed(by: disposeBag)
+
     }
 }

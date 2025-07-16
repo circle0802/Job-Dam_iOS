@@ -88,8 +88,9 @@ class IdViewController: BaseViewController {
 
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                let passwordViewController = PasswordViewController()
-                self?.navigationController?.pushViewController(passwordViewController, animated: true)
+                SignupInfo.shared.id = self?.idTextField.textField.text
+                let passwordVC = PasswordViewController()
+                self?.navigationController?.pushViewController(passwordVC, animated: true)
             })
             .disposed(by: disposeBag)
     }

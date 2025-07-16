@@ -3,8 +3,12 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Moya
 
 class LoginViewController: BaseViewController {
+    private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
+    private lazy var provider = MoyaProvider<AuthAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+
     let logoImage = UIImageView().then {
         $0.image = UIImage(named: "smallLogo")
     }
@@ -96,5 +100,35 @@ class LoginViewController: BaseViewController {
                 self?.navigationController?.pushViewController(idViewController, animated: true)
             })
             .disposed(by: disposeBag)
+        
+        loginButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self!.login()
+                
+            })
+            .disposed(by: disposeBag)
     }
+
+    private func login() {
+        provider.request(.login(id: idTextField.textField.text ?? "", password: passwordTextField.textField.text ?? "")) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decodedData = try JSONDecoder().decode(AccessToken.self, from: response.data)
+                    Token.accessToken = decodedData.accessToken
+                    print("로그인 성공:", decodedData.accessToken)
+
+                    // 로그인 성공 후 탭바로 전환
+                    SceneDelegate.switchToMainTabbar()
+
+                } catch {
+                    print("디코딩 에러:", error)
+                }
+
+            case .failure(let error):
+                print("로그인 실패:", error)
+            }
+        }
+    }
+
 }
