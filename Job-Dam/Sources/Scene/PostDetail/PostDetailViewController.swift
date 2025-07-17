@@ -8,6 +8,7 @@ class PostDetailViewController: BaseViewController {
     private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
     private lazy var provider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
 
+
     private let titleLabel = UILabel().then {
         $0.font = .jobdamFont(.heading3)
         $0.numberOfLines = 0
@@ -31,7 +32,11 @@ class PostDetailViewController: BaseViewController {
     private var evaluationPopupView: EvaluationPopupView?
 
     private let id: Int
-    private var isAuthor: Bool = false  // 현재 로그인 유저가 글 작성자인지 여부
+    private var isAuthor: Bool = false
+
+    // 수정/삭제 버튼
+    private lazy var editButton = UIBarButtonItem(title: "수정", style: .plain, target: self, action: #selector(editButtonTapped))
+    private lazy var deleteButton = UIBarButtonItem(title: "삭제", style: .plain, target: self, action: #selector(deleteButtonTapped))
 
     init(id: Int) {
         self.id = id
@@ -92,7 +97,6 @@ class PostDetailViewController: BaseViewController {
 
         commentTableView.didSelectComment = { [weak self] comment in
             guard let self = self else { return }
-
             if self.isAuthor {
                 self.showEvaluationPopup(for: comment)
             } else {
@@ -122,11 +126,12 @@ class PostDetailViewController: BaseViewController {
                         self.dayLabel.text = decodedData.createdAt
                         self.commentTableView.updateData(decodedData.commentList.comments)
 
-                        // ✅ 작성자인지 여부 확인
                         self.isAuthor = decodedData.author == Token.userID
+
                         print("📌 작성자: \(decodedData.author)")
                         print("📌 내 ID: \(Token.userID ?? "nil")")
 
+                        self.updateNavigationBarButtons()
                     }
                 } catch {
                     print("Decoding error:", error)
@@ -138,6 +143,14 @@ class PostDetailViewController: BaseViewController {
         }
     }
 
+    private func updateNavigationBarButtons() {
+        guard isAuthor else {
+            navigationItem.rightBarButtonItems = []
+            return
+        }
+        navigationItem.rightBarButtonItems = [deleteButton, editButton]
+    }
+
     private func showEvaluationPopup(for comment: Comment) {
         evaluationPopupView = EvaluationPopupView(authorName: comment.author)
         evaluationPopupView?.onEvaluationComplete = { rating in
@@ -147,9 +160,7 @@ class PostDetailViewController: BaseViewController {
     }
 
     private func submitEvaluation(commentId: Int, rating: Double) {
-        // 평가 제출 로직
         print("✅ 평가 제출 - 댓글 ID: \(commentId), 평점: \(rating)")
-        // API 요청 등 추가 가능
     }
 
     private func showToast(_ message: String) {
@@ -179,5 +190,21 @@ class PostDetailViewController: BaseViewController {
 
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc private func editButtonTapped() {
+        let editVC = EditViewController(id: id, title: titleLabel.text!, content: contentLabel.text!)
+        self.navigationController?.pushViewController(editVC, animated: true)
+    }
+
+    @objc private func deleteButtonTapped() {
+        provider.request(.deletePost(id: id)) { result in
+            switch result {
+            case .success(_):
+                self.navigationController?.popViewController(animated: true)
+            case .failure(let error):
+                print("🚨 \(error)")
+            }
+        }
     }
 }

@@ -57,7 +57,9 @@ class PasswordViewController: BaseViewController {
                 passwordTextField.textField.rx.text.orEmpty,
                 passwordConfirmTextField.textField.rx.text.orEmpty
             )
-            .map { !$0.isEmpty && !$1.isEmpty }
+            .map { password, confirm in
+                return !password.isEmpty && !confirm.isEmpty && password == confirm
+            }
             .distinctUntilChanged()
             .bind(to: nextButton.rx.isEnabled)
             .disposed(by: disposeBag)
@@ -69,6 +71,5 @@ class PasswordViewController: BaseViewController {
                 self?.navigationController?.pushViewController(infoVC, animated: true)
             })
             .disposed(by: disposeBag)
-
     }
 }
