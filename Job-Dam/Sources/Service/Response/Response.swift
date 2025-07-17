@@ -62,3 +62,7 @@ struct Post: Codable {
     let content: String
 }
 
+struct IdCheck: Codable {
+    let exists: Bool
+}
+
