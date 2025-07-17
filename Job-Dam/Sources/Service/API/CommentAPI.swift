@@ -2,7 +2,7 @@ import UIKit
 import Moya
 
 enum CommentAPI {
-    case evaluation(id: Int, point: Int)
+    case evaluation(id: Int, point: Double)
 }
 
 extension CommentAPI: TargetType {

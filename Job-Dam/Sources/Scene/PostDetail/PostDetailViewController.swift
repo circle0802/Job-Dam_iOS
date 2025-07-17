@@ -6,7 +6,8 @@ import Moya
 
 class PostDetailViewController: BaseViewController {
     private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
-    private lazy var provider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+    private lazy var postProvider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+    private lazy var commentProvider = MoyaProvider<CommentAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
 
     private let titleLabel = UILabel().then {
         $0.font = .jobdamFont(.heading3)
@@ -102,19 +103,26 @@ class PostDetailViewController: BaseViewController {
     private func showEvaluationPopup(for comment: Comment) {
         evaluationPopupView = EvaluationPopupView(authorName: comment.author)
         evaluationPopupView?.onEvaluationComplete = { [weak self] rating in
-            self?.submitEvaluation(for: comment.author, rating: rating)
+            self?.submitEvaluation(for: comment.id, rating: rating)
         }
         evaluationPopupView?.show()
     }
-    
-    private func submitEvaluation(for author: String, rating: Double) {
-        // 평가 제출 로직 구현
-        print("평가 제출: 작성자 \(author), 평점 \(rating)")
-        // 여기에 실제 API 호출 로직 추가
+
+    private func submitEvaluation(for commentId: Int, rating: Double) {
+        print("평가 제출: 댓글 ID \(commentId), 평점 \(rating)")
+
+        commentProvider.request(.evaluation(id: commentId, point: rating)) { result in
+            switch result {
+            case .success(_):
+                print("성공!")
+            case .failure(_):
+                print("실패!")
+            }
+        }
     }
 
     private func getPostDetail() {
-        provider.request(.viewDetailPost(id: id)) { [weak self] result in
+        postProvider.request(.viewDetailPost(id: id)) { [weak self] result in
             guard let self else { return }
             
             switch result {

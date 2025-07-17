@@ -101,7 +101,8 @@ class EvaluationPopupView: UIView {
         self.cosmosView.settings.starMargin = 4
         self.cosmosView.settings.filledColor = JobDamAsset.main400.color
         self.cosmosView.settings.emptyColor = JobDamAsset.gray100.color
-        self.cosmosView.settings.emptyBorderColor = JobDamAsset.main400.color
+        self.cosmosView.settings.emptyBorderColor = JobDamAsset.gray100.color
+        self.cosmosView.settings.filledBorderColor = JobDamAsset.main400.color
         self.cosmosView.settings.fillMode = .half
     }
     
@@ -158,20 +159,16 @@ extension EvaluationPopupView {
         
         self.frame = window.bounds
         window.addSubview(self)
-        
         self.alpha = 0
-        self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         
-        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseOut) {
+        UIView.animate(withDuration: 0.25) {
             self.alpha = 1
-            self.transform = .identity
         }
     }
     
     func hide() {
-        UIView.animate(withDuration: 0.25, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.alpha = 0
-            self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         }) { _ in
             self.removeFromSuperview()
         }

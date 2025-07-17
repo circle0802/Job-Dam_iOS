@@ -43,6 +43,7 @@ struct Comment: Codable {
     let id: Int
     let content: String
     let createdAt: String
+    let isRated: Bool
 }
 
 struct AccessToken: Codable {
