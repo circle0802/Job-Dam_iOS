@@ -39,25 +39,36 @@ enum Header {
     case accessToken, tokenIsEmpty, refreshToken, uploadImage
 
     func header() -> [String: String]? {
-        guard let token = Token.accessToken else {
-            return ["Content-Type": "application/json"]
-        }
-
-        guard let refreshToken = Token.refreshToken else {
-            return ["Content-Type": "application/json"]
-        }
-
         switch self {
         case .accessToken:
-            print(token)
-            return ["Authorization": "Bearer " + token]
+            if let token = Token.accessToken {
+                print("💡 AccessToken exists: \(token)")
+                return ["Authorization": "Bearer \(token)"]
+            } else {
+                print("⚠️ AccessToken is missing")
+                return ["Content-Type": "application/json"]
+            }
+
         case .refreshToken:
-            return ["Authorization": "Bearer " + token,
-                    "Refresh-Token": refreshToken, "Content-Type": "application/json"]
+            if let token = Token.accessToken, let refresh = Token.refreshToken {
+                return ["Authorization": "Bearer \(token)",
+                        "Refresh-Token": refresh,
+                        "Content-Type": "application/json"]
+            } else {
+                print("⚠️ RefreshToken or AccessToken is missing")
+                return ["Content-Type": "application/json"]
+            }
+
         case .tokenIsEmpty:
             return ["Content-Type": "application/json"]
+
         case .uploadImage:
-            return ["Authorization": "Bearer " + token, "Content-Type": "multipart/form-data"]
+            if let token = Token.accessToken {
+                return ["Authorization": "Bearer \(token)",
+                        "Content-Type": "multipart/form-data"]
+            } else {
+                return ["Content-Type": "multipart/form-data"]
+            }
         }
     }
 }

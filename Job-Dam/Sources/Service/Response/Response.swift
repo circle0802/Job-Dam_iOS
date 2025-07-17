@@ -48,3 +48,16 @@ struct Comment: Codable {
 struct AccessToken: Codable {
     let accessToken: String
 }
+
+struct UserResponse: Codable {
+    let id: String
+    let jobType: String
+    let posts: [Post]
+}
+
+struct Post: Codable {
+    let id: Int
+    let title: String
+    let content: String
+}
+

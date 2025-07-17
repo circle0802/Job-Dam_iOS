@@ -3,8 +3,13 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Then
+import Moya
 
 class MyViewController: BaseViewController {
+    private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
+    private lazy var provider = MoyaProvider<AuthAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+
+    public var posts: [Post] = []
 
     let profileImage = UIImageView().then {
         $0.image = JobDamAsset.student.image
@@ -40,8 +45,22 @@ class MyViewController: BaseViewController {
     let logoutButton = MyButton(text: "로그아웃", color: JobDamAsset.error.color)
     let secessionButton = MyButton(text: "회원탈퇴", color: JobDamAsset.error.color)
 
-    private let logoutPopupView = PopupView(title: "로그아웃", content: "정말 로그아웃 하시겠습니까?")
-    private let secessionPopupView = PopupView(title: "회원탈퇴", content: "정말 회원탈퇴 하시겠습니까?")
+    // 팝업 뷰들 - 액션과 함께 생성
+    private lazy var logoutPopupView = PopupView(
+        title: "로그아웃",
+        content: "정말 로그아웃 하시겠습니까?",
+        confirmTitle: "로그아웃"
+    ) { [weak self] in
+        self?.performLogout()
+    }
+    
+    private lazy var secessionPopupView = PopupView(
+        title: "회원탈퇴",
+        content: "정말 회원탈퇴 하시겠습니까?",
+        confirmTitle: "탈퇴"
+    ) { [weak self] in
+        self?.performLogout()
+    }
 
     override func configureViewController() {
         self.title = "마이페이지"
@@ -114,10 +133,46 @@ class MyViewController: BaseViewController {
 
         questionButton.rx.tap
             .bind { [weak self] in
-                let mypostVC = MyPostViewController()
-                mypostVC.hidesBottomBarWhenPushed = true
-                self?.navigationController?.pushViewController(mypostVC, animated: true)
+                let myPosts: [Post] = self!.posts
+
+                let myPostVC = MyPostViewController(posts: myPosts)
+                self?.navigationController?.pushViewController(myPostVC, animated: true)
             }
             .disposed(by: disposeBag)
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        myPageData()
+    }
+    
+    private func myPageData() {
+        provider.request(.myPage) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let user = try JSONDecoder().decode(UserResponse.self, from: response.data)
+                    self.idLabel.text = user.id
+                    self.genderLabel.text = user.jobType
+                    self.posts = user.posts
+                } catch {
+                    print("Decode error:", error)
+                }
+            case .failure(let error):
+                print("Network error:", error)
+            }
+            
+        }
+    }
 }
+extension MyViewController {
+    // MARK: - Private Methods
+    
+    /// 로그아웃 처리
+    private func performLogout() {
+        Token.accessToken = nil
+        SceneDelegate.switchToLoginScreen()
+    }
+}
+    
+    
+

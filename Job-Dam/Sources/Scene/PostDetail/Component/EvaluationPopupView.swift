@@ -101,6 +101,7 @@ class EvaluationPopupView: UIView {
         self.cosmosView.settings.starMargin = 4
         self.cosmosView.settings.filledColor = JobDamAsset.main400.color
         self.cosmosView.settings.emptyColor = JobDamAsset.gray100.color
+        self.cosmosView.settings.emptyBorderColor = JobDamAsset.main400.color
     }
     private func bind() {
         cancelButton.rx.tap

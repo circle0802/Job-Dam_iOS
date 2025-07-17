@@ -5,6 +5,7 @@ enum AuthAPI {
     case signup(parameters: [String: Any])
     case login(id: String, password: String)
     case idConfirm(id: String)
+    case myPage
 }
 
 extension AuthAPI: TargetType {
@@ -20,12 +21,14 @@ extension AuthAPI: TargetType {
             return "/user/login"
         case .idConfirm(let id):
             return "/user/exist?id=\(id)"
+        case .myPage:
+            return "/user/myPage"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .idConfirm:
+        case .idConfirm, .myPage:
             return .get
         default:
             return .post
@@ -45,13 +48,15 @@ extension AuthAPI: TargetType {
                     "id": id,
                     "password": password
                 ], encoding: JSONEncoding.default)
-        case .idConfirm(id: let id):
+        case .idConfirm, .myPage:
             return .requestPlain
         }
     }
     
     var headers: [String : String]? {
         switch self {
+        case .myPage:
+            return Header.accessToken.header()
         default:
             return Header.tokenIsEmpty.header()
         }

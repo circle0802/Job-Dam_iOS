@@ -2,9 +2,9 @@ import UIKit
 import SnapKit
 import Then
 
-final class PostTableView: UIView {
+final class MyPostTableView: UIView {
 
-    private var posts: [SimplePost] = []
+    private var posts: [Post] = []
     
     var didSelectName: ((Int) -> Void)?
     
@@ -12,7 +12,7 @@ final class PostTableView: UIView {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
-        $0.register(PostCell.self, forCellReuseIdentifier: PostCell.identifier)
+        $0.register(MyPostCell.self, forCellReuseIdentifier: MyPostCell.identifier)
     }
 
     override init(frame: CGRect) {
@@ -38,13 +38,13 @@ final class PostTableView: UIView {
     }
     
     // 데이터 갱신 함수 추가
-    func updateData(_ posts: [SimplePost]) {
+    func updateData(_ posts: [Post]) {
         self.posts = posts
         tableView.reloadData()
     }
 }
 
-extension PostTableView: UITableViewDataSource {
+extension MyPostTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return posts.count
@@ -56,18 +56,18 @@ extension PostTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostCell.identifier, for: indexPath) as? PostCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyPostCell.identifier, for: indexPath) as? MyPostCell else {
             return UITableViewCell()
         }
         
         let post = posts[indexPath.section]
-        cell.configure(title: post.title, id: post.username, count: post.commentCount)
+        cell.configure(title: post.title)
 
         return cell
     }
 }
 
-extension PostTableView: UITableViewDelegate {
+extension MyPostTableView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
