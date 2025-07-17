@@ -6,8 +6,7 @@ import Moya
 
 class PostDetailViewController: BaseViewController {
     private let manager: Session = Session(configuration: URLSessionConfiguration.default, serverTrustManager: CustomServerTrustManager())
-    private lazy var postProvider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
-    private lazy var commentProvider = MoyaProvider<CommentAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
+    private lazy var provider = MoyaProvider<PostAPI>(session: manager, plugins: [MoyaLoggingPlugin()])
 
     private let titleLabel = UILabel().then {
         $0.font = .jobdamFont(.heading3)
@@ -30,14 +29,15 @@ class PostDetailViewController: BaseViewController {
     }
     private let commentTableView = CommentTableView()
     private var evaluationPopupView: EvaluationPopupView?
-    
+
     private let id: Int
-    
+    private var isAuthor: Bool = false  // 현재 로그인 유저가 글 작성자인지 여부
+
     init(id: Int) {
         self.id = id
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -52,7 +52,7 @@ class PostDetailViewController: BaseViewController {
             commentTableView
         ].forEach { view.addSubview($0) }
     }
-    
+
     override func setLayout() {
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).inset(32)
@@ -81,7 +81,7 @@ class PostDetailViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview().inset(24)
         }
     }
-    
+
     override func configureViewController() {
         self.title = "질문"
 
@@ -91,40 +91,25 @@ class PostDetailViewController: BaseViewController {
         navigationItem.leftBarButtonItem?.tintColor = JobDamAsset.black.color
 
         commentTableView.didSelectComment = { [weak self] comment in
-            self?.showEvaluationPopup(for: comment)
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        getPostDetail()
-    }
-    
-    private func showEvaluationPopup(for comment: Comment) {
-        evaluationPopupView = EvaluationPopupView(authorName: comment.author)
-        evaluationPopupView?.onEvaluationComplete = { [weak self] rating in
-            self?.submitEvaluation(for: comment.id, rating: rating)
-        }
-        evaluationPopupView?.show()
-    }
+            guard let self = self else { return }
 
-    private func submitEvaluation(for commentId: Int, rating: Double) {
-        print("평가 제출: 댓글 ID \(commentId), 평점 \(rating)")
-
-        commentProvider.request(.evaluation(id: commentId, point: rating)) { result in
-            switch result {
-            case .success(_):
-                print("성공!")
-            case .failure(_):
-                print("실패!")
+            if self.isAuthor {
+                self.showEvaluationPopup(for: comment)
+            } else {
+                self.showToast("작성자만 신뢰도를 평가할 수 있어요.")
             }
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getPostDetail()
+    }
+
     private func getPostDetail() {
-        postProvider.request(.viewDetailPost(id: id)) { [weak self] result in
+        provider.request(.viewDetailPost(id: id)) { [weak self] result in
             guard let self else { return }
-            
+
             switch result {
             case .success(let response):
                 do {
@@ -135,8 +120,13 @@ class PostDetailViewController: BaseViewController {
                         self.idLabel.text = decodedData.author
                         self.contentLabel.text = decodedData.content
                         self.dayLabel.text = decodedData.createdAt
-                        
                         self.commentTableView.updateData(decodedData.commentList.comments)
+
+                        // ✅ 작성자인지 여부 확인
+                        self.isAuthor = decodedData.author == Token.userID
+                        print("📌 작성자: \(decodedData.author)")
+                        print("📌 내 ID: \(Token.userID ?? "nil")")
+
                     }
                 } catch {
                     print("Decoding error:", error)
@@ -144,6 +134,45 @@ class PostDetailViewController: BaseViewController {
 
             case .failure(let error):
                 print("Network error:", error)
+            }
+        }
+    }
+
+    private func showEvaluationPopup(for comment: Comment) {
+        evaluationPopupView = EvaluationPopupView(authorName: comment.author)
+        evaluationPopupView?.onEvaluationComplete = { rating in
+            self.submitEvaluation(commentId: comment.id, rating: rating)
+        }
+        evaluationPopupView?.show()
+    }
+
+    private func submitEvaluation(commentId: Int, rating: Double) {
+        // 평가 제출 로직
+        print("✅ 평가 제출 - 댓글 ID: \(commentId), 평점: \(rating)")
+        // API 요청 등 추가 가능
+    }
+
+    private func showToast(_ message: String) {
+        let toastLabel = UILabel()
+        toastLabel.text = message
+        toastLabel.textAlignment = .center
+        toastLabel.font = .systemFont(ofSize: 14)
+        toastLabel.textColor = .white
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        toastLabel.layer.cornerRadius = 8
+        toastLabel.clipsToBounds = true
+        toastLabel.alpha = 0
+
+        toastLabel.frame = CGRect(x: 20, y: view.frame.size.height - 100, width: view.frame.size.width - 40, height: 35)
+        view.addSubview(toastLabel)
+
+        UIView.animate(withDuration: 0.5, animations: {
+            toastLabel.alpha = 1.0
+        }) { _ in
+            UIView.animate(withDuration: 0.5, delay: 1.5, options: .curveEaseOut, animations: {
+                toastLabel.alpha = 0.0
+            }) { _ in
+                toastLabel.removeFromSuperview()
             }
         }
     }

@@ -116,6 +116,7 @@ class LoginViewController: BaseViewController {
                 do {
                     let decodedData = try JSONDecoder().decode(AccessToken.self, from: response.data)
                     Token.accessToken = decodedData.accessToken
+                    Token.userID = self.idTextField.textField.text
                     print("로그인 성공:", decodedData.accessToken)
 
                     // 로그인 성공 후 탭바로 전환
