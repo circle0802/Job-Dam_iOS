@@ -21,17 +21,17 @@ class PostDetailViewController: BaseViewController {
         $0.numberOfLines = 0
     }
     private let dayLabel = UILabel().then {
-        $0.text = "2025.07.16"
         $0.font = .jobdamFont(.body3)
         $0.textColor = JobDamAsset.gray600.color
     }
     private let line = UIView().then {
         $0.backgroundColor = JobDamAsset.gray200.color
     }
-    private let commemtTableView = CommentTableView()
-    private let evaluationPopupView = EvaluationPopupView(id: "circle08")
-
+    private let commentTableView = CommentTableView()
+    private var evaluationPopupView: EvaluationPopupView?
+    
     private let id: Int
+    
     init(id: Int) {
         self.id = id
         super.init(nibName: nil, bundle: nil)
@@ -48,9 +48,10 @@ class PostDetailViewController: BaseViewController {
             contentLabel,
             dayLabel,
             line,
-            commemtTableView
+            commentTableView
         ].forEach { view.addSubview($0) }
     }
+    
     override func setLayout() {
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).inset(32)
@@ -73,12 +74,13 @@ class PostDetailViewController: BaseViewController {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(1)
         }
-        commemtTableView.snp.makeConstraints {
+        commentTableView.snp.makeConstraints {
             $0.top.equalTo(line.snp.bottom).offset(20)
             $0.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(24)
         }
     }
+    
     override func configureViewController() {
         self.title = "질문"
 
@@ -87,13 +89,28 @@ class PostDetailViewController: BaseViewController {
         navigationItem.leftBarButtonItem = backButton
         navigationItem.leftBarButtonItem?.tintColor = JobDamAsset.black.color
 
-        commemtTableView.didSelectName = { [weak self] commentCount in
-            self?.evaluationPopupView.show()
+        commentTableView.didSelectComment = { [weak self] comment in
+            self?.showEvaluationPopup(for: comment)
         }
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         getPostDetail()
+    }
+    
+    private func showEvaluationPopup(for comment: Comment) {
+        evaluationPopupView = EvaluationPopupView(authorName: comment.author)
+        evaluationPopupView?.onEvaluationComplete = { [weak self] rating in
+            self?.submitEvaluation(for: comment.author, rating: rating)
+        }
+        evaluationPopupView?.show()
+    }
+    
+    private func submitEvaluation(for author: String, rating: Double) {
+        // 평가 제출 로직 구현
+        print("평가 제출: 작성자 \(author), 평점 \(rating)")
+        // 여기에 실제 API 호출 로직 추가
     }
 
     private func getPostDetail() {
@@ -111,7 +128,7 @@ class PostDetailViewController: BaseViewController {
                         self.contentLabel.text = decodedData.content
                         self.dayLabel.text = decodedData.createdAt
                         
-                        self.commemtTableView.updateData(decodedData.commentList.comments)
+                        self.commentTableView.updateData(decodedData.commentList.comments)
                     }
                 } catch {
                     print("Decoding error:", error)

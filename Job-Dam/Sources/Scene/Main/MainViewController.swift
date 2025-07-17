@@ -156,6 +156,9 @@ extension MainViewController {
     
     func tryDonating() {
         print("tryDonating called")
+        if let url = URL(string: "https://job-dam-user.vercel.app/") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
     }
     
     func tryDoneeDetail() {
@@ -164,5 +167,8 @@ extension MainViewController {
     
     func goToGGNet() {
         print("goToGGNet called")
+        let jobTalkVC = JobTalkViewController()
+        jobTalkVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(jobTalkVC, animated: true)
     }
 }

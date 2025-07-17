@@ -3,10 +3,9 @@ import SnapKit
 import Then
 
 final class CommentTableView: UIView {
-
-    private var posts: [Comment] = []
+    private var comments: [Comment] = []
     
-    var didSelectName: ((Int) -> Void)?
+    var didSelectComment: ((Comment) -> Void)?
     
     private let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.separatorStyle = .none
@@ -14,7 +13,7 @@ final class CommentTableView: UIView {
         $0.backgroundColor = .clear
         $0.register(CommentCell.self, forCellReuseIdentifier: CommentCell.identifier)
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -36,16 +35,19 @@ final class CommentTableView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
     }
+    
     func updateData(_ newComments: [Comment]) {
-        self.posts = newComments
-        self.tableView.reloadData()
+        self.comments = newComments
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
 
 extension CommentTableView: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return posts.count
+        return comments.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,14 +55,12 @@ extension CommentTableView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else {
             return UITableViewCell()
         }
         
-        let post = posts[indexPath.section]
-        cell.configure(id: post.author, content: post.content)
-
+        let comment = comments[indexPath.section]
+        cell.configure(id: comment.author, content: comment.content)
         return cell
     }
 }
@@ -72,8 +72,8 @@ extension CommentTableView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedPost = posts[indexPath.section]
-        didSelectName?(selectedPost.id)
+        let selectedComment = comments[indexPath.section]
+        didSelectComment?(selectedComment)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

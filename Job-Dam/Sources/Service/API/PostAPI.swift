@@ -5,6 +5,8 @@ enum PostAPI {
     case viewAllPosts
     case viewDetailPost(id: Int)
     case createPost(title: String, content: String)
+    case deletePost(id: Int)
+    case editPost(id: Int, content: String)
 }
 
 extension PostAPI: TargetType {
@@ -16,7 +18,7 @@ extension PostAPI: TargetType {
         switch self {
         case .viewAllPosts:
             return "/posts"
-        case .viewDetailPost(let id):
+        case .viewDetailPost(let id), .deletePost(let id), .editPost(let id, _):
             return "/post/\(id)"
         case .createPost:
             return "/post"
@@ -29,6 +31,10 @@ extension PostAPI: TargetType {
             return .get
         case .createPost:
             return .post
+        case .deletePost:
+            return .delete
+        case .editPost:
+            return .patch
         }
     }
     
@@ -38,6 +44,11 @@ extension PostAPI: TargetType {
             return .requestParameters(
                 parameters: [
                     "title": title,
+                    "content": content
+                ], encoding: JSONEncoding.default)
+        case .editPost(_ , let content):
+            return .requestParameters(
+                parameters: [
                     "content": content
                 ], encoding: JSONEncoding.default)
         default:

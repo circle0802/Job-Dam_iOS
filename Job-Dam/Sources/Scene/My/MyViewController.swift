@@ -19,13 +19,11 @@ class MyViewController: BaseViewController {
     }
 
     let idLabel = UILabel().then {
-        $0.text = "circle08"
         $0.font = .jobdamFont(.body1)
         $0.textColor = JobDamAsset.black.color
     }
 
     let genderLabel = UILabel().then {
-        $0.text = "여자"
         $0.font = .jobdamFont(.body1)
         $0.textColor = JobDamAsset.black.color
     }

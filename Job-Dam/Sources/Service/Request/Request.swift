@@ -1,7 +1,6 @@
-//
-//  Void.swift
-//  Hackathon-Template
-//
-//  Created by 원이 on 7/14/25.
-//
+import Foundation
 
+struct Evaluation: Codable {
+    let id: Int
+    let point: Int
+}
